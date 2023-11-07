@@ -17,8 +17,13 @@
       }
     }
   },
+  "styles": [
+    "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
+    "node_modules/primeng/resources/primeng.min.css"
+  ],
   "targetDefaults": {
     "build": {
+      "cache": true,
       "dependsOn": [
         "^build"
       ],
@@ -28,6 +33,7 @@
       ]
     },
     "test": {
+      "cache": true,
       "inputs": [
         "default",
         "^production",
@@ -35,6 +41,7 @@
       ]
     },
     "lint": {
+      "cache": true,
       "inputs": [
         "default",
         "{workspaceRoot}/.eslintrc.json",

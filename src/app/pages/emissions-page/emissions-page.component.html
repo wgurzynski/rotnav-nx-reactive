@@ -1,0 +1,6 @@
+<app-emissions-dropdown
+  [options]="dropdownOptions$ | async"
+  [selectedOption]="activeEmissionSet$ | async"
+  (changeSelectedOption)="onChangeSelectedOption($event)"
+></app-emissions-dropdown>
+<app-emissions-chart *ngIf="chartData$ | async as chartData" [chartData]="chartData[0]"></app-emissions-chart>

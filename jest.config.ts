@@ -1,9 +1,12 @@
 /* eslint-disable */
+const esModules = ['@angular', '@ngrx'];
 export default {
   displayName: 'rotnav',
-  preset: './jest.preset.js',
+  preset: 'jest-preset-angular',
+  extensionsToTreatAsEsm: ['.ts'],
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   coverageDirectory: './coverage/rotnav',
+  moduleFileExtensions: ['ts', 'html', 'js', 'json', 'mjs'],
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',
@@ -13,7 +16,10 @@ export default {
       },
     ],
   },
-  transformIgnorePatterns: ['node_modules/(?!.*\\.mjs$)'],
+  transformIgnorePatterns: [
+    'node_modules/(?!.*\\.mjs$)',
+    `node_modules/(?!.*\\.mjs$|${esModules.join(' | ')})`,
+  ],
   snapshotSerializers: [
     'jest-preset-angular/build/serializers/no-ng-attributes',
     'jest-preset-angular/build/serializers/ng-snapshot',
