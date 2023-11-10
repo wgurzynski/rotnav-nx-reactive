@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { map, Observable, Subject, tap } from 'rxjs';
 import { EmissionsPageRestService } from './services/emissions-page-rest.service';
 import { DropdownOption } from './components/emissions-dropdown/emissions-dropdown.component';
@@ -22,10 +22,11 @@ export interface EmissionTimeSeries {
 
 @Injectable({ providedIn: 'any' })
 export class EmissionsPageConnector {
-  chartsData$: Observable<EmissionData[]> = this.restService
+  private readonly restService: EmissionsPageRestService = inject(EmissionsPageRestService);
+  private readonly _activeEmissionSetSub$: Subject<DropdownOption> = new Subject<DropdownOption>();
+  readonly chartsData$: Observable<EmissionData[]> = this.restService
     .getChartData()
     .pipe(tap((chartData: EmissionData[]) => chartData[0] && this.changeActiveEmissionSet({ id: chartData[0].id })));
-  private readonly _activeEmissionSetSub$: Subject<DropdownOption> = new Subject<DropdownOption>();
   readonly activeEmissionSet$: Observable<DropdownOption> = this._activeEmissionSetSub$.asObservable();
   readonly dropdownOptions$: Observable<DropdownOption[]> = this.chartsData$.pipe(
     map((emissionDataArray: EmissionData[]) => {
@@ -37,8 +38,6 @@ export class EmissionsPageConnector {
 
   //TODO observe for data for selected chart only
   // activeChartData$: Observable<any> = this.chartsData$.pipe(switchMap((emissionsData: EmissionData[]) => {}));
-
-  constructor(private restService: EmissionsPageRestService) {}
 
   changeActiveEmissionSet(option: DropdownOption): void {
     this._activeEmissionSetSub$.next(option);

@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TabMenuModule } from 'primeng/tabmenu';
 import { MenuItem } from 'primeng/api';
@@ -14,8 +14,7 @@ import { Observable } from 'rxjs';
   styleUrls: ['./navigation.component.scss'],
 })
 export class NavigationComponent {
+  private readonly navigationConnector: NavigationConnector = inject(NavigationConnector);
   readonly menuItems: MenuItem[] = this.navigationConnector.menuItems;
   activeItem$: Observable<MenuItem> = this.navigationConnector.activeItem$;
-
-  constructor(private navigationConnector: NavigationConnector) {}
 }

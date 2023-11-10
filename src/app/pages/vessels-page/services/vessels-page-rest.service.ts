@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { VesselsRowData } from '../vessels-page.connector';
@@ -7,11 +7,9 @@ import { VesselsRowData } from '../vessels-page.connector';
   providedIn: 'root',
 })
 export class VesselsPageRestService {
-  constructor(private httpClient: HttpClient) {}
+  private httpClient: HttpClient = inject(HttpClient);
 
   getRowData(): Observable<VesselsRowData[]> {
-    return this.httpClient.get<VesselsRowData[]>(
-      'https://frontendteamfiles.blob.core.windows.net/exercises/vessels.json'
-    );
+    return this.httpClient.get<VesselsRowData[]>('https://frontendteamfiles.blob.core.windows.net/exercises/vessels.json');
   }
 }

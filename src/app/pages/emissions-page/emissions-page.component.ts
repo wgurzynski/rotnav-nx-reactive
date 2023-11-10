@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 import { EmissionData, EmissionsPageConnector } from './emissions-page.connector';
@@ -14,13 +14,12 @@ import { DropdownOption, EmissionsDropdownComponent } from './components/emissio
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmissionsPageComponent {
+  private emissionsPageConnector: EmissionsPageConnector = inject(EmissionsPageConnector);
   readonly chartData$: Observable<EmissionData[]> = this.emissionsPageConnector.chartsData$;
 
   //TODO it could be one stream with {id: number, active: boolean}
   readonly dropdownOptions$: Observable<DropdownOption[]> = this.emissionsPageConnector.dropdownOptions$;
   readonly activeEmissionSet$: Observable<DropdownOption> = this.emissionsPageConnector.activeEmissionSet$;
-
-  constructor(private emissionsPageConnector: EmissionsPageConnector) {}
 
   onChangeSelectedOption(option: DropdownOption): void {
     this.emissionsPageConnector.changeActiveEmissionSet(option);

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ColDef } from 'ag-grid-community';
 import { VesselsPageConnector, VesselsRowData } from './vessels-page.connector';
@@ -15,9 +15,7 @@ import { VesselsTableComponent } from './components/vessels-table/vessels-table.
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VesselsPageComponent {
+  private vesselsPageConnector: VesselsPageConnector = inject(VesselsPageConnector);
   readonly columnDefs: ColDef[] = this.vesselsPageConnector.columnDefs;
-  readonly rowData$: Observable<VesselsRowData[]> =
-    this.vesselsPageConnector.rowData$;
-
-  constructor(private vesselsPageConnector: VesselsPageConnector) {}
+  readonly rowData$: Observable<VesselsRowData[]> = this.vesselsPageConnector.rowData$;
 }

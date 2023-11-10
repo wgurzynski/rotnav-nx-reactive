@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { EmissionData } from '../emissions-page.connector';
@@ -7,11 +7,9 @@ import { EmissionData } from '../emissions-page.connector';
   providedIn: 'root',
 })
 export class EmissionsPageRestService {
-  constructor(private httpClient: HttpClient) {}
+  private httpClient: HttpClient = inject(HttpClient);
 
   getChartData(): Observable<EmissionData[]> {
-    return this.httpClient.get<EmissionData[]>(
-      'https://frontendteamfiles.blob.core.windows.net/exercises/emissions.json'
-    );
+    return this.httpClient.get<EmissionData[]>('https://frontendteamfiles.blob.core.windows.net/exercises/emissions.json');
   }
 }

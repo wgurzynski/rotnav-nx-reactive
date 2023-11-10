@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ColDef } from 'ag-grid-community';
 import { Observable, of } from 'rxjs';
 import { VesselsPageRestService } from './services/vessels-page-rest.service';
@@ -18,6 +18,8 @@ export interface VesselsRowData {
 
 @Injectable({ providedIn: 'any' })
 export class VesselsPageConnector {
+  private restService: VesselsPageRestService = inject(VesselsPageRestService);
+  readonly rowData$: Observable<VesselsRowData[]> = this.restService.getRowData();
   readonly columnDefs: ColDef[] = [
     { field: 'id' },
     { field: 'name' },
@@ -29,9 +31,4 @@ export class VesselsPageConnector {
     { field: 'active', cellRenderer: BooleanRenderer },
     { field: 'vesselType' },
   ];
-
-  readonly rowData$: Observable<VesselsRowData[]> =
-    this.restService.getRowData();
-
-  constructor(private restService: VesselsPageRestService) {}
 }
