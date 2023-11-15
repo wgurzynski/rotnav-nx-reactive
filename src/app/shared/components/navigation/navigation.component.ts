@@ -5,6 +5,9 @@ import { MenuItem } from 'primeng/api';
 import { ROUTE_NAMES } from '../../constants/routes.constants';
 import { NavigationConnector } from './navigation.connector';
 import { Observable } from 'rxjs';
+import { EmissionsDropdownComponent } from '../../../pages/emissions-page/components/emissions-dropdown/emissions-dropdown.component';
+import { EmissionsPageConnector } from '../../../pages/emissions-page/emissions-page.connector';
+import { EmissionChartStructure, EmissionsDropdownOption } from '@shared/models/emissions.model';
 
 @Component({
   selector: 'app-navigation',

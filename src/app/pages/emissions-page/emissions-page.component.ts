@@ -1,27 +1,27 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
-import { EmissionData, EmissionsPageConnector } from './emissions-page.connector';
+import { EmissionsPageConnector } from './emissions-page.connector';
 import { EmissionsChartComponent } from './components/emissions-chart/emissions-chart.component';
-import { DropdownOption, EmissionsDropdownComponent } from './components/emissions-dropdown/emissions-dropdown.component';
+import { EmissionsDropdownComponent } from './components/emissions-dropdown/emissions-dropdown.component';
+import { EmissionChartStructure, EmissionsDropdownOption } from '@shared/models/emissions.model';
+import { PanelModule } from 'primeng/panel';
 
 @Component({
   selector: 'app-emissions-page',
   standalone: true,
-  imports: [CommonModule, EmissionsChartComponent, EmissionsDropdownComponent],
+  imports: [CommonModule, EmissionsChartComponent, EmissionsDropdownComponent, PanelModule],
   templateUrl: './emissions-page.component.html',
   styleUrls: ['./emissions-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmissionsPageComponent {
   private emissionsPageConnector: EmissionsPageConnector = inject(EmissionsPageConnector);
-  readonly chartData$: Observable<EmissionData[]> = this.emissionsPageConnector.chartsData$;
+  readonly activeChartData$: Observable<EmissionChartStructure> = this.emissionsPageConnector.activeChartData$;
+  readonly dropdownOptions$: Observable<EmissionsDropdownOption[]> = this.emissionsPageConnector.dropdownOptions$;
+  readonly activeEmissionSet$: Observable<EmissionsDropdownOption> = this.emissionsPageConnector.selectedDropdownOption$;
 
-  //TODO it could be one stream with {id: number, active: boolean}
-  readonly dropdownOptions$: Observable<DropdownOption[]> = this.emissionsPageConnector.dropdownOptions$;
-  readonly activeEmissionSet$: Observable<DropdownOption> = this.emissionsPageConnector.activeEmissionSet$;
-
-  onChangeSelectedOption(option: DropdownOption): void {
+  onChangeSelectedOption(option: EmissionsDropdownOption): void {
     this.emissionsPageConnector.changeActiveEmissionSet(option);
   }
 }

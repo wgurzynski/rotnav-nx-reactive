@@ -1,15 +1,9 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { DropdownChangeEvent } from 'primeng/dropdown/dropdown.interface';
+import { EmissionsDropdownOption } from '@shared/models/emissions.model';
 
 @Component({
   selector: 'app-emissions-dropdown',
@@ -20,26 +14,21 @@ import { DropdownChangeEvent } from 'primeng/dropdown/dropdown.interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmissionsDropdownComponent implements OnInit {
-  @Output() changeSelectedOption: EventEmitter<DropdownOption> =
-    new EventEmitter<DropdownOption>();
-  @Input() set selectedOption(selectedOption: DropdownOption | null) {
+  @Output() changeSelectedOption: EventEmitter<EmissionsDropdownOption> = new EventEmitter<EmissionsDropdownOption>();
+  @Input() set selectedOption(selectedOption: EmissionsDropdownOption | null) {
     this.formGroup?.get('selectedOption')?.setValue(selectedOption);
   }
   @Input({ required: true })
-  options!: DropdownOption[] | null;
+  options!: EmissionsDropdownOption[] | null;
   formGroup: FormGroup | undefined;
 
   ngOnInit() {
     this.formGroup = new FormGroup({
-      selectedOption: new FormControl<DropdownOption | null>(null),
+      selectedOption: new FormControl<EmissionsDropdownOption | null>(null),
     });
   }
 
   onChangeSelectedOption({ value }: DropdownChangeEvent): void {
     this.changeSelectedOption.emit(value);
   }
-}
-
-export interface DropdownOption {
-  id: number;
 }

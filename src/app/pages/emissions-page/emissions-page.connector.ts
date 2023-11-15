@@ -1,45 +1,48 @@
 import { inject, Injectable } from '@angular/core';
-import { map, Observable, Subject, tap } from 'rxjs';
+import { combineLatest, map, Observable, Subject, tap } from 'rxjs';
 import { EmissionsPageRestService } from './services/emissions-page-rest.service';
-import { DropdownOption } from './components/emissions-dropdown/emissions-dropdown.component';
-
-//TODO move to proper file
-export interface EmissionData {
-  id: number;
-  timeSeries: EmissionTimeSeries[];
-}
-
-//TODO move to proper file
-export interface EmissionTimeSeries {
-  report_from_utc: Date;
-  report_to_utc: Date;
-  co2_emissions: number;
-  sox_emissions: number;
-  nox_emissions: number;
-  pm_emissions: number;
-  ch4_emissions: number;
-}
+import { EmissionsDropdownOption, EmissionChartStructure, EmissionData } from '@shared/models/emissions.model';
+import { getChartDefinition } from '@shared/utils/emissions.helper';
+import { AppStateService } from '@shared/services/app.state.service';
+import { VesselsRowData } from '../vessels-page/vessels-page.connector';
 
 @Injectable({ providedIn: 'any' })
 export class EmissionsPageConnector {
-  private readonly restService: EmissionsPageRestService = inject(EmissionsPageRestService);
-  private readonly _activeEmissionSetSub$: Subject<DropdownOption> = new Subject<DropdownOption>();
-  readonly chartsData$: Observable<EmissionData[]> = this.restService
+  private readonly appStateService: AppStateService = inject(AppStateService);
+  private readonly emissionsPageRestService: EmissionsPageRestService = inject(EmissionsPageRestService);
+  private readonly _selectedDropdownOptionSub$: Subject<EmissionsDropdownOption> = new Subject<EmissionsDropdownOption>();
+  private readonly bulkChartsData: Observable<EmissionData[]> = this.emissionsPageRestService
     .getChartData()
     .pipe(tap((chartData: EmissionData[]) => chartData[0] && this.changeActiveEmissionSet({ id: chartData[0].id })));
-  readonly activeEmissionSet$: Observable<DropdownOption> = this._activeEmissionSetSub$.asObservable();
-  readonly dropdownOptions$: Observable<DropdownOption[]> = this.chartsData$.pipe(
-    map((emissionDataArray: EmissionData[]) => {
-      return emissionDataArray.map((emissionData: EmissionData) => {
-        return { id: emissionData.id };
-      });
-    })
+  readonly selectedDropdownOption$: Observable<EmissionsDropdownOption> = this._selectedDropdownOptionSub$.asObservable();
+  readonly dropdownOptions$: Observable<EmissionsDropdownOption[]> = combineLatest([this.appStateService.rowData$, this.bulkChartsData]).pipe(
+    map(([rowData, chartsData]: [rowData: VesselsRowData[], chartsData: EmissionData[]]) =>
+      chartsData.map((emissionData: EmissionData) => {
+        const correspondingDataInRowData: VesselsRowData | undefined = rowData.find((row: VesselsRowData) => row.id === emissionData.id);
+
+        return { id: emissionData.id, label: correspondingDataInRowData ? correspondingDataInRowData.name : null };
+      })
+    )
   );
 
-  //TODO observe for data for selected chart only
-  // activeChartData$: Observable<any> = this.chartsData$.pipe(switchMap((emissionsData: EmissionData[]) => {}));
+  readonly activeChartData$: Observable<EmissionChartStructure> = combineLatest([
+    this.bulkChartsData,
+    this.selectedDropdownOption$,
+    this.dropdownOptions$,
+  ]).pipe(
+    map(
+      ([chartsData, activeEmissionSet, dropdownOptions]: [
+        chartsData: EmissionData[],
+        activeEmissionSet: EmissionsDropdownOption,
+        dropdownOptions: EmissionsDropdownOption[]
+      ]) => {
+        const activeChartDataIndex: number = chartsData.findIndex((chart: EmissionData) => chart.id === activeEmissionSet.id);
+        return getChartDefinition(chartsData[activeChartDataIndex], dropdownOptions[activeChartDataIndex].label || '');
+      }
+    )
+  );
 
-  changeActiveEmissionSet(option: DropdownOption): void {
-    this._activeEmissionSetSub$.next(option);
+  changeActiveEmissionSet(option: EmissionsDropdownOption): void {
+    this._selectedDropdownOptionSub$.next(option);
   }
 }

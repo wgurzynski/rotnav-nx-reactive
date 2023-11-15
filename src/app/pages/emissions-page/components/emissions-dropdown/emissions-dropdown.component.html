@@ -1,5 +1,5 @@
 <div class="card flex justify-content-center" *ngIf='formGroup && options'>
   <form [formGroup]="formGroup">
-    <p-dropdown formControlName="selectedOption" [options]="options" optionLabel="id" (onChange)='onChangeSelectedOption($event)'></p-dropdown>
+    <p-dropdown formControlName="selectedOption" [options]="options" optionLabel="label" (onChange)='onChangeSelectedOption($event)'></p-dropdown>
   </form>
 </div>

@@ -2,46 +2,30 @@ import { Injectable } from '@angular/core';
 import { MenuItem, MenuItemCommandEvent } from 'primeng/api';
 import { NavigationEnd, Router } from '@angular/router';
 import { ROUTE_NAMES } from '../../constants/routes.constants';
-import {
-  BehaviorSubject,
-  filter,
-  map,
-  Observable,
-  shareReplay,
-  take,
-} from 'rxjs';
+import { BehaviorSubject, filter, map, Observable, shareReplay, take } from 'rxjs';
 
 @Injectable({ providedIn: 'any' })
 export class NavigationConnector {
   public readonly menuItems: MenuItem[] = [
     {
       label: 'Vessels',
-      icon: 'pi pi-fw pi-home',
+      icon: 'pi pi-fw pi-database',
       id: ROUTE_NAMES.VESSELS_PAGE,
       command: (event: MenuItemCommandEvent) => {
-        this.onNavigationChange(
-          event.item as MenuItem,
-          ROUTE_NAMES.VESSELS_PAGE
-        );
+        this.onNavigationChange(event.item as MenuItem, ROUTE_NAMES.VESSELS_PAGE);
       },
     },
     {
       label: 'Emmisions',
-      icon: 'pi pi-fw pi-calendar',
+      icon: 'pi pi-fw pi-chart-bar',
       id: ROUTE_NAMES.EMISSIONS_PAGE,
       command: (event: MenuItemCommandEvent) => {
-        this.onNavigationChange(
-          event.item as MenuItem,
-          ROUTE_NAMES.EMISSIONS_PAGE
-        );
+        this.onNavigationChange(event.item as MenuItem, ROUTE_NAMES.EMISSIONS_PAGE);
       },
     },
   ];
-  private readonly activeItemSub$: BehaviorSubject<MenuItem> =
-    new BehaviorSubject<MenuItem>(this.menuItems[0]);
-  public readonly activeItem$: Observable<MenuItem> = this.activeItemSub$
-    .asObservable()
-    .pipe(shareReplay());
+  private readonly activeItemSub$: BehaviorSubject<MenuItem> = new BehaviorSubject<MenuItem>(this.menuItems[0]);
+  public readonly activeItem$: Observable<MenuItem> = this.activeItemSub$.asObservable().pipe(shareReplay());
 
   constructor(private router: Router) {
     router.events
@@ -50,9 +34,7 @@ export class NavigationConnector {
         map((route) => this.findMenuItemByActiveRoute(route, this.menuItems)),
         take(1)
       )
-      .subscribe((activeRouteMenuItem: MenuItem) =>
-        this.changeActiveItem(activeRouteMenuItem)
-      );
+      .subscribe((activeRouteMenuItem: MenuItem) => this.changeActiveItem(activeRouteMenuItem));
   }
 
   onNavigationChange(menuItem: MenuItem, url?: string): void {
@@ -64,14 +46,9 @@ export class NavigationConnector {
     this.activeItemSub$.next(activatedMenuItem);
   }
 
-  private findMenuItemByActiveRoute(
-    route: any,
-    menuItems: MenuItem[]
-  ): MenuItem {
+  private findMenuItemByActiveRoute(route: any, menuItems: MenuItem[]): MenuItem {
     const routeName = route.url.replace('/', '');
 
-    return menuItems.filter(
-      (menuItem: MenuItem) => menuItem.id === routeName
-    )[0];
+    return menuItems.filter((menuItem: MenuItem) => menuItem.id === routeName)[0];
   }
 }

@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { EmissionData } from '../emissions-page.connector';
+import { EmissionData } from '@shared/models/emissions.model';
 
 @Injectable({
   providedIn: 'root',

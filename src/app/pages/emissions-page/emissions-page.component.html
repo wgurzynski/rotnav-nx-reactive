@@ -1,6 +1,10 @@
-<app-emissions-dropdown
-  [options]="dropdownOptions$ | async"
-  [selectedOption]="activeEmissionSet$ | async"
-  (changeSelectedOption)="onChangeSelectedOption($event)"
-></app-emissions-dropdown>
-<app-emissions-chart *ngIf="chartData$ | async as chartData" [chartData]="chartData[0]"></app-emissions-chart>
+<div id='chart-wrapper'>
+  <p-panel>
+    <ng-template pTemplate="header" class='panel-header'> <app-emissions-dropdown
+      [options]="dropdownOptions$ | async"
+      [selectedOption]="activeEmissionSet$ | async"
+      (changeSelectedOption)="onChangeSelectedOption($event)"
+    ></app-emissions-dropdown></ng-template>
+    <app-emissions-chart *ngIf="activeChartData$ | async as activeChartData" [chartData]='activeChartData'></app-emissions-chart>
+  </p-panel>
+</div>
