@@ -3,25 +3,23 @@ import { ICellRenderer, ICellRendererParams } from 'ag-grid-community';
 export class BooleanRenderer implements ICellRenderer {
   private eGui!: HTMLElement;
 
-  init({ value }: ICellRendererParams) {
+  init({ value }: ICellRendererParams): void {
     this.eGui = document.createElement('span');
     if (value !== '' || value !== undefined) {
-      this.eGui.innerHTML = `<i style="color: ${
-        value ? 'green' : 'red'
-      }" width="20px" class="pi ${value ? 'pi-check' : 'pi-times'} " />`;
+      this.eGui.innerHTML = `<i style="color: ${value ? 'green' : 'red'}" width="20px" class="pi ${value ? 'pi-check' : 'pi-times'} " />`;
     }
   }
 
-  getGui() {
+  getGui(): HTMLElement {
     return this.eGui;
   }
 
-  refresh() {
+  refresh(): boolean {
     return false;
   }
 }
 
-export function dateFormatter(params: any) {
+export function dateFormatter(params: any): string {
   return new Date(params.value).toLocaleDateString('en-GB', {
     timeZone: 'UTC',
     day: 'numeric',

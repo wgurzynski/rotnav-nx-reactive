@@ -16,7 +16,7 @@ export class VesselsTableComponent {
   @Input({ required: true }) rowData!: VesselsRowData[];
   @Input({ required: true }) columnDefs!: ColDef[];
 
-  onGridReady(params: any) {
+  onGridReady(params: any): void {
     params.api.sizeColumnsToFit();
   }
 }
