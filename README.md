@@ -6,7 +6,7 @@ It's main purpose was to showcase my reactive approach interest, and my abilitie
 If you're interested in exploring an alternative store-based approach, 
 you can check out my Store-Based Implementation for a different perspective here: 
 
-[RotNav - Store Based Solution](https://nx.dev)
+[RotNav - Store Based Solution](https://github.com/wgurzynski/rotnav-nx)
 ## Tools used
 
 📌 **Rxjs - for asynchronous data handling and reactive architecture**
